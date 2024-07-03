@@ -1,6 +1,7 @@
 package net.swanndolia.gameboard;
 
 import lombok.Data;
+import net.swanndolia.IHM;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
 

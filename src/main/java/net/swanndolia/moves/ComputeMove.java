@@ -22,84 +22,6 @@ public class ComputeMove {
         this.square = square;
     }
 
-    public MoveDirection getMoveDirection() {
-
-        this.horizontalMovement = this.piece.getSquare().getHorizontalCoordinates() - this.square.getHorizontalCoordinates();
-        this.verticalMovement = this.piece.getSquare().getVerticalCoordinates() - this.square.getVerticalCoordinates();
-
-        if (this.piece.getColor() == Color.WHITE) {
-            this.verticalMovement = -this.verticalMovement;
-        }
-
-        if (this.horizontalMovement == 0) {
-            if (this.verticalMovement == 0) {
-                this.moveDirection = MoveDirection.INVALID;
-            } else {
-                this.moveDirection = this.verticalMovement > 0 ? MoveDirection.FORWARD : MoveDirection.BACKWARD;
-            }
-        } else if (this.verticalMovement == 0) {
-            this.moveDirection = this.horizontalMovement > 0 ? MoveDirection.RiGHT : MoveDirection.LEFT;
-        } else if (this.horizontalMovement == this.verticalMovement) {
-            this.moveDirection = this.horizontalMovement > 0 ? MoveDirection.DIAGONAL_UP_RIGHT : MoveDirection.DIAGONAL_DOWN_LEFT;
-        } else if (this.horizontalMovement == -this.verticalMovement) {
-            this.moveDirection = this.horizontalMovement > 0 ? MoveDirection.DIAGONAL_DOWN_RIGHT : MoveDirection.DIAGONAL_UP_LEFT;
-        } else if (Math.abs(this.verticalMovement) == 1 && Math.abs(this.horizontalMovement) == 2 ||
-                Math.abs(this.verticalMovement) == 2 && Math.abs(this.horizontalMovement) == 1) {
-            this.moveDirection = MoveDirection.KNIGHT;
-        } else {
-            this.moveDirection = MoveDirection.INVALID;
-        }
-        return this.moveDirection;
-    }
-
-    public int getMoveDistance() {
-        this.moveDistance = Math.abs(this.horizontalMovement) > Math.abs(this.verticalMovement) ? this.horizontalMovement : this.verticalMovement;
-        return this.moveDistance;
-    }
-
-    public boolean isMoveBlocked() {
-        boolean moveIsBlocked = false;
-        if (this.square.getPiece() != null && this.square.getPiece().getColor() == this.piece.getColor()) {
-            moveIsBlocked = true;
-            IHM.sendMessageToUser("The destination cell already contain your: " + square.getPiece().getFullName());
-        } else {
-            ChessBoard chessBoard = this.square.getGameboard();
-            for (int i = 1; i <= this.moveDistance; i++) {
-                if (this.piece.getColor() == Color.BLACK) {
-                    i = -i;
-                }
-                switch (this.moveDirection) {
-                    case LEFT -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() - i).getPiece() != null;
-                    case RiGHT -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() + i).getPiece() != null;
-                    case DIAGONAL_UP_LEFT -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates() + i, square.getHorizontalCoordinates() - i).getPiece() != null;
-                    case DIAGONAL_UP_RIGHT -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates() + i, square.getHorizontalCoordinates() + i).getPiece() != null;
-                    case DIAGONAL_DOWN_LEFT -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates() - i, square.getHorizontalCoordinates() - i).getPiece() != null;
-                    case DIAGONAL_DOWN_RIGHT -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates() - i, square.getHorizontalCoordinates() + i).getPiece() != null;
-                    case FORWARD -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates() + i, square.getHorizontalCoordinates()).getPiece() != null;
-                    case BACKWARD -> moveIsBlocked =
-                            chessBoard.getSquare(square.getVerticalCoordinates() - i, square.getHorizontalCoordinates()).getPiece() != null;
-                    case KNIGHT -> moveIsBlocked = false;
-                    case INVALID -> moveIsBlocked = true;
-                }
-                if (this.piece.getColor() == Color.BLACK) {
-                    i = -i;
-                }
-            }
-
-        }
-        if (moveIsBlocked) {
-            IHM.sendMessageToUser("The destination cell is blocked ");
-        }
-        return moveIsBlocked;
-    }
-
     public static int[] convertMoveCoordinate(String userInput) {
         Map<Character, Integer> columnToIntMap = new HashMap<Character, Integer>() {{//RENAME
             put('a', 7);
@@ -137,5 +59,127 @@ public class ComputeMove {
             IHM.sendMessageToUser(e.getMessage());
             return null;
         }
+    }
+
+    public MoveDirection getMoveDirection() {
+
+        this.horizontalMovement = this.piece.getSquare().getHorizontalCoordinates() - this.square.getHorizontalCoordinates();
+        this.verticalMovement = this.piece.getSquare().getVerticalCoordinates() - this.square.getVerticalCoordinates();
+
+        if (this.piece.getColor() == Color.WHITE) {
+            this.verticalMovement = -verticalMovement;
+        } //fix rook and bishop invalid movement, also fix pawn cant move 2 times
+
+        if (this.horizontalMovement == 0 && this.verticalMovement == 0) {
+            this.moveDirection = MoveDirection.INVALID;
+        } else if (this.horizontalMovement == this.verticalMovement) {
+            this.moveDirection = this.horizontalMovement > 0 ? MoveDirection.DIAGONAL_UP_RIGHT : MoveDirection.DIAGONAL_DOWN_LEFT;
+        } else if (this.horizontalMovement == -this.verticalMovement) {
+            this.moveDirection = this.horizontalMovement > 0 ? MoveDirection.DIAGONAL_DOWN_RIGHT : MoveDirection.DIAGONAL_UP_LEFT;
+        } else if (Math.abs(this.verticalMovement) == 1 && Math.abs(this.horizontalMovement) == 2 ||
+                Math.abs(this.verticalMovement) == 2 && Math.abs(this.horizontalMovement) == 1) {
+            this.moveDirection = MoveDirection.KNIGHT;
+        } else if (this.horizontalMovement == 0) {
+            this.moveDirection = this.verticalMovement > 0 ? MoveDirection.FORWARD : MoveDirection.BACKWARD;
+        } else if (this.verticalMovement == 0) {
+            this.moveDirection = this.horizontalMovement > 0 ? MoveDirection.RIGHT : MoveDirection.LEFT;
+        } else {
+            this.moveDirection = MoveDirection.INVALID;
+        }
+        return this.moveDirection;
+    }
+
+    public int getMoveDistance() {
+        switch (this.moveDirection) {
+            case DIAGONAL_DOWN_LEFT, DIAGONAL_UP_LEFT, DIAGONAL_DOWN_RIGHT, DIAGONAL_UP_RIGHT, LEFT, RIGHT -> {
+                this.moveDistance = this.piece.getSquare().getHorizontalCoordinates() - this.square.getHorizontalCoordinates();
+            }
+            case FORWARD, BACKWARD -> this.moveDistance = this.piece.getSquare().getVerticalCoordinates() - this.square.getVerticalCoordinates();
+        }
+        return this.moveDistance;
+    }
+
+    public boolean isMoveBlocked() {
+        boolean moveIsBlocked = false;
+        if (this.square.getPiece() != null && this.square.getPiece().getColor() == this.piece.getColor()) {
+            moveIsBlocked = true;
+            IHM.sendMessageToUser("The destination cell already contain your: " + this.square.getPiece().getFullName());
+        } else {
+            ChessBoard chessBoard = this.piece.getSquare().getGameboard();
+            for (int i = 1; i <= this.moveDistance; i++) {
+                if (this.piece.getColor() == Color.BLACK) {
+                    i = -i;
+                }
+                IHM.sendMessageToUser(
+                        this.piece.getSquare().getVerticalCoordinates() - i + " " + (this.piece.getSquare().getHorizontalCoordinates() - i));
+                switch (this.moveDirection) {
+                    case LEFT -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates(),
+                                                 this.piece.getSquare().getHorizontalCoordinates() - i
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case RIGHT -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates(),
+                                                 this.piece.getSquare().getHorizontalCoordinates() + i
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case DIAGONAL_UP_LEFT -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() + i,
+                                                 this.piece.getSquare().getHorizontalCoordinates() - i
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case DIAGONAL_UP_RIGHT -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() + i,
+                                                 this.piece.getSquare().getHorizontalCoordinates() + i
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case DIAGONAL_DOWN_LEFT -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() - i,
+                                                 this.piece.getSquare().getHorizontalCoordinates() - i
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case DIAGONAL_DOWN_RIGHT -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() - i,
+                                                 this.piece.getSquare().getHorizontalCoordinates() + i
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case FORWARD -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() + i,
+                                                 this.piece.getSquare().getHorizontalCoordinates()
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case BACKWARD -> {
+                        if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() - i,
+                                                 this.piece.getSquare().getHorizontalCoordinates()
+                        ).getPiece() != null) {
+                            return true;
+                        }
+                    }
+                    case KNIGHT -> moveIsBlocked = false;
+                    case INVALID -> moveIsBlocked = true;
+                }
+                if (this.piece.getColor() == Color.BLACK) {
+                    i = -i;
+                }
+            }
+        }
+        if (moveIsBlocked) {
+            IHM.sendMessageToUser("The destination cell is blocked ");
+        }
+        return moveIsBlocked;
     }
 }

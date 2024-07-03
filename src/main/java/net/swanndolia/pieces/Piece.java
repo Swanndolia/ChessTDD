@@ -46,14 +46,14 @@ public abstract class Piece implements PieceAction {
 
         if (this.allowedMoveDirection.contains(moveDirection)) {
             int moveDistance = computeMove.getMoveDistance();
-            if (this.getMaximumMoveDistance() >= moveDistance) {
+            if (moveDistance <= this.getMaximumMoveDistance()) {
                 return !computeMove.isMoveBlocked();
             }
             IHM.sendMessageToUser(
                     "Your " + this.fullName + " can only move " + this.getMaximumMoveDistance() + " square " + this.allowedMoveDirection);
             return false;
         }
-        IHM.sendMessageToUser("A " + this.fullName + " can only move: " + this.allowedMoveDirection);
+        IHM.sendMessageToUser("A " + this.fullName + " can only move: " + this.allowedMoveDirection + " not " + moveDirection);
         return false;
     }
 }

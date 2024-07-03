@@ -24,7 +24,7 @@ public class King extends Piece implements PieceAction {
         this.allowedMoveDirection.add(MoveDirection.FORWARD);
         this.allowedMoveDirection.add(MoveDirection.BACKWARD);
         this.allowedMoveDirection.add(MoveDirection.LEFT);
-        this.allowedMoveDirection.add(MoveDirection.RiGHT);
+        this.allowedMoveDirection.add(MoveDirection.RIGHT);
         this.square = square;
         this.maximumMoveDistance = 1;
     }
