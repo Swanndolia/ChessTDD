@@ -7,38 +7,36 @@ import lombok.NoArgsConstructor;
 import net.swanndolia.pieces.Piece;
 import net.swanndolia.utils.Color;
 
+import static net.swanndolia.utils.ColorList.*;
+import static net.swanndolia.utils.ConsoleSpacing.EMPTY_CELL_SPACING;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Square {
+    ChessBoard gameboard;
     Color color;
     Piece piece;
     int horizontalCoordinates;
     int verticalCoordinates;
 
-    public void emptySquare(){
+    public void emptySquare() {
         this.piece = null;
     }
 
     @Override
     public String toString() {
-        final String ANSI_BLACK            = "\u001B[30m";
-        final String ANSI_WHITE            = "\u001B[37m";
-        final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
-        final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
         if (this.color == Color.BLACK) {
             if (this.piece != null) {
-                return ANSI_WHITE + ANSI_BLACK_BACKGROUND + " " + this.piece.toString(ANSI_BLACK_BACKGROUND) + ANSI_WHITE + ANSI_BLACK_BACKGROUND +
-                        " " + ANSI_WHITE + ANSI_BLACK_BACKGROUND;
+                return WHITE_TEXT + BLACK_BACK + " " + this.piece.getColoredIcon(BLACK_BACK) + WHITE_TEXT + BLACK_BACK + " " + RESET;
             }
-            return ANSI_WHITE + ANSI_BLACK_BACKGROUND + "   " + ANSI_WHITE + ANSI_BLACK_BACKGROUND;
+            return BLACK_BACK  + EMPTY_CELL_SPACING + RESET;
         } else {
             if (this.piece != null) {
-                return ANSI_BLACK + ANSI_WHITE_BACKGROUND + " " + this.piece.toString(ANSI_WHITE_BACKGROUND) + ANSI_BLACK + ANSI_WHITE_BACKGROUND +
-                        " " + ANSI_WHITE + ANSI_BLACK_BACKGROUND;
+                return BLACK_TEXT + WHITE_BACK + " " + this.piece.getColoredIcon(WHITE_BACK) + BLACK_TEXT + WHITE_BACK + " " + RESET;
             }
-            return ANSI_BLACK + ANSI_WHITE_BACKGROUND + "   " + ANSI_WHITE + ANSI_BLACK_BACKGROUND;
+            return WHITE_BACK + EMPTY_CELL_SPACING + RESET;
         }
     }
 }

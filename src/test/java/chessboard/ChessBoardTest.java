@@ -19,12 +19,11 @@ public class ChessBoardTest {
         chessBoard.initChessboard();
         Square square = chessBoard.getGameBoard()[new Random().nextInt(chessBoard.getGameBoardSize() - 1)][new Random().nextInt(
                 chessBoard.getGameBoardSize() - 1)];
-        if(square.getHorizontalCoordinates() % 2 == 0  && square.getVerticalCoordinates() % 2 == 0 ){
+        if (square.getHorizontalCoordinates() % 2 == 0 && square.getVerticalCoordinates() % 2 == 0) {
             assertThat(square.getColor().equals(Color.WHITE));
-        } else if(square.getHorizontalCoordinates() % 2 != 0  && square.getVerticalCoordinates() % 2 != 0 ){
+        } else if (square.getHorizontalCoordinates() % 2 != 0 && square.getVerticalCoordinates() % 2 != 0) {
             assertThat(square.getColor().equals(Color.WHITE));
-        }
-        else {
+        } else {
             assertThat(square.getColor().equals(Color.BLACK));
         }
     }

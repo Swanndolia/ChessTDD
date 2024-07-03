@@ -1,28 +1,24 @@
 package net.swanndolia.gameboard;
 
 import lombok.Data;
-import net.swanndolia.IHM;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
+import static net.swanndolia.utils.ConsoleSpacing.*;
 
 @Data
 public class ChessBoard {
     int gameBoardSize = 8;
-    boolean whitePiecesTopside = false;
     Square[][] gameBoard = new Square[gameBoardSize][gameBoardSize];
     boolean whiteToPlay = true;
-    List<Piece> whitePieces = new ArrayList<>();
-    List<Piece> blackPieces = new ArrayList<>();
 
     public void initChessboard() {
         for (int vertical = 0; vertical < gameBoardSize; vertical++) {
             for (int horizontal = 0; horizontal < gameBoardSize; horizontal++) {
                 Square currentSquare = gameBoard[vertical][horizontal] = Square.builder().verticalCoordinates(vertical).horizontalCoordinates(
-                        horizontal).color(handleSquareColor(vertical, horizontal)).piece(null).build();
+                        horizontal).color(handleSquareColor(vertical, horizontal)).piece(null).gameboard(this).build();
                 if (vertical == 0) {
                     addPieces(currentSquare, Color.WHITE);
                 } else if (vertical == 7) {
@@ -39,51 +35,12 @@ public class ChessBoard {
 
     private void addPieces(Square currentSquare, Color color) {
         switch (currentSquare.horizontalCoordinates) {
-            case 0, 7 -> {
-                Rook rook = new Rook(color, currentSquare);
-                if (color == Color.WHITE) {
-                    whitePieces.add(rook);
-                } else {
-                    blackPieces.add(rook);
-                }
-                currentSquare.setPiece(rook);
-            }
-            case 1, 6 -> {
-                Knight knight = new Knight(color, currentSquare);
-                if (color == Color.WHITE) {
-                    whitePieces.add(knight);
-                } else {
-                    blackPieces.add(knight);
-                }
-                currentSquare.setPiece(new Knight(color, currentSquare));
-            }
-            case 2, 5 -> {
-                Bishop bishop = new Bishop(color, currentSquare);
-                if (color == Color.WHITE) {
-                    whitePieces.add(bishop);
-                } else {
-                    blackPieces.add(bishop);
-                }
-                currentSquare.setPiece(bishop);
-            }
-            case 3 -> {
-                King king = new King(color, currentSquare);
-                if (color == Color.WHITE) {
-                    whitePieces.add(king);
-                } else {
-                    blackPieces.add(king);
-                }
-                currentSquare.setPiece(king);
-            }
-            case 4 -> {
-                Queen queen = new Queen(color, currentSquare);
-                if (color == Color.WHITE) {
-                    whitePieces.add(queen);
-                } else {
-                    blackPieces.add(queen);
-                }
-                currentSquare.setPiece(queen);
-            }
+            case 0, 7 -> currentSquare.setPiece(new Rook(color, currentSquare));
+            case 1, 6 -> currentSquare.setPiece(new Knight(color, currentSquare));
+            case 2, 5 -> currentSquare.setPiece(new Bishop(color, currentSquare));
+            case 3 -> currentSquare.setPiece(new King(color, currentSquare));
+            case 4 -> currentSquare.setPiece(new Queen(color, currentSquare));
+
         }
     }
 
@@ -92,11 +49,33 @@ public class ChessBoard {
         Arrays.stream(blackPawnsRow).forEach(square -> square.setPiece(new Pawn(Color.BLACK, square)));
     }
 
+    public boolean playMove(int[] moveInput) {
+        Square initialSquare     = gameBoard[moveInput[0]][moveInput[1]];
+        Square destinationSquare = gameBoard[moveInput[2]][moveInput[3]];
+        Piece  pieceToMove       = initialSquare.getPiece();
+        if (pieceToMove != null) {
+            if (pieceToMove.getColor() == Color.WHITE && isWhiteToPlay() || pieceToMove.getColor() == Color.BLACK && !isWhiteToPlay()) {
+                boolean moveIsValid = pieceToMove.move(destinationSquare);
+                if (moveIsValid) {
+                    initialSquare.emptySquare();
+                    destinationSquare.setPiece(pieceToMove);
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public Square getSquare(int verticalCoordinate, int horizontalCoordinate){
+        return this.gameBoard[verticalCoordinate][horizontalCoordinate];
+    }
+
     @Override
     public String toString() {
         String        gameboard          = "";
-        StringBuilder horizontalNotation = new StringBuilder("   H  G  F  E  D  C  B  A  ");
-        if (whitePiecesTopside) {
+        StringBuilder horizontalNotation = new StringBuilder(STARTING_INDEX_SPACING + "H,G,F,E,D,C,B,A" + STARTING_INDEX_SPACING);
+        if (!whiteToPlay) {
             for (int vertical = 0; vertical < gameBoardSize; vertical++) {
                 gameboard = gameboard.concat(vertical + 1 + " ");
                 for (int horizontal = 0; horizontal < gameBoardSize; horizontal++) {
@@ -104,7 +83,7 @@ public class ChessBoard {
                 }
                 gameboard = gameboard.concat("\n");
             }
-            gameboard = gameboard.concat(horizontalNotation.toString());
+            gameboard = gameboard.concat(horizontalNotation.toString().replaceAll(",", HORIZONTAL_INDEX_SPACING));
         } else {
             for (int vertical = gameBoardSize - 1; vertical >= 0; vertical--) {
                 gameboard = gameboard.concat(vertical + 1 + " ");
@@ -113,26 +92,8 @@ public class ChessBoard {
                 }
                 gameboard = gameboard.concat("\n");
             }
-            gameboard = gameboard.concat(horizontalNotation.reverse().toString());
+            gameboard = gameboard.concat(horizontalNotation.reverse().toString().replaceAll(",", HORIZONTAL_INDEX_SPACING));
         }
         return gameboard;
-    }
-
-    public boolean playMove(int[] moveInput) {
-        Square initialSquare     = gameBoard[moveInput[0]][moveInput[1]];
-        Square destinationSquare = gameBoard[moveInput[2]][moveInput[3]];
-        Piece  pieceToMove       = initialSquare.getPiece();
-        if (pieceToMove != null) {
-            if (pieceToMove.getColor() == Color.WHITE && isWhiteToPlay() || pieceToMove.getColor() == Color.BLACK && !isWhiteToPlay()) {
-                /*boolean moveIsValid = pieceToMove.move(destinationSquare);
-                if (moveIsValid) {*/
-                initialSquare.emptySquare();
-                destinationSquare.setPiece(pieceToMove);
-                return true;
-                //}
-            }
-            return false;
-        }
-        return false;
     }
 }

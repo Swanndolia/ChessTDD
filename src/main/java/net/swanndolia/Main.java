@@ -8,7 +8,7 @@ public class Main {
         chessBoard.initChessboard();
         while (true) {
             IHM.sendMessageToUser("Write a move or type 'exit' to quit.");
-            System.out.println(chessBoard);
+            IHM.sendMessageToUser(chessBoard.toString());
             String userInput = IHM.askUserInput();
             if (userInput.contains("exit")) {
                 return;
@@ -17,7 +17,6 @@ public class Main {
             if (moveInput != null) {
                 if (chessBoard.playMove(moveInput)) {
                     chessBoard.setWhiteToPlay(!chessBoard.isWhiteToPlay());
-                    chessBoard.setWhitePiecesTopside(!chessBoard.isWhitePiecesTopside());
                 } else {
                     IHM.sendMessageToUser("Invalid Move");
                 }
