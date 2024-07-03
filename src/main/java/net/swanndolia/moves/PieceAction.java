@@ -4,5 +4,6 @@ import net.swanndolia.gameboard.Square;
 
 public interface PieceAction {
     void capture(Square square);
-    void move(Square square);
+    boolean move(Square square);
+    boolean moveIsValid(Square square);
 }

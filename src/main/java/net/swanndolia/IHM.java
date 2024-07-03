@@ -20,25 +20,30 @@ public class IHM {
             int[] move = new int[4];
             userInput = userInput.toLowerCase();
             Map<Character, Integer> columnToIntMap = new HashMap<Character, Integer>() {{
-                put('a', 0);
-                put('b', 1);
-                put('c', 2);
-                put('d', 3);
-                put('e', 4);
-                put('f', 5);
-                put('g', 6);
-                put('h', 7);
+                put('a', 1);
+                put('b', 2);
+                put('c', 3);
+                put('d', 4);
+                put('e', 5);
+                put('f', 6);
+                put('g', 7);
+                put('h', 8);
             }};
             try {
-                move[0] = columnToIntMap.get(userInput.charAt(0));
-                move[1] = Integer.parseInt(String.valueOf(userInput.charAt(1) - 1));
-                move[2] = columnToIntMap.get(userInput.charAt(2));
-                move[3] = Integer.parseInt(String.valueOf(userInput.charAt(3) - 1));
-                if (move[1] > 7 || move[1] < 0 || move[3] < 0 || move[3] > 7) {
-                    return null;
+                move[0] = Integer.parseInt(String.valueOf(userInput.charAt(1))) - 1;
+                move[1] = columnToIntMap.get(userInput.charAt(0)) - 1;
+                move[2] = Integer.parseInt(String.valueOf(userInput.charAt(3))) - 1;
+                move[3] = columnToIntMap.get(userInput.charAt(2)) - 1;
+                for (int coordinate : move) {
+                    sendMessageToUser(String.valueOf(coordinate));
+                    if (coordinate < 0 || coordinate > 7) {
+                        sendMessageToUser("OutOfBonds");
+                        return null;
+                    }
                 }
                 return move;
             } catch (Exception e) {
+                sendMessageToUser(e.getMessage());
                 return null;
             }
         }

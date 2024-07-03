@@ -1,6 +1,7 @@
 package net.swanndolia.gameboard;
 
 import lombok.Data;
+import net.swanndolia.IHM;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
 
@@ -94,7 +95,7 @@ public class ChessBoard {
     @Override
     public String toString() {
         String        gameboard          = "";
-        StringBuilder horizontalNotation = new StringBuilder("    H  G  F  E  D  C  B  A  ");
+        StringBuilder horizontalNotation = new StringBuilder("   H  G  F  E  D  C  B  A  ");
         if (whitePiecesTopside) {
             for (int vertical = 0; vertical < gameBoardSize; vertical++) {
                 gameboard = gameboard.concat(vertical + 1 + " ");
@@ -117,8 +118,21 @@ public class ChessBoard {
         return gameboard;
     }
 
-    public void playMove(int[] moveInput) {
-        Piece pieceToMove = gameBoard[moveInput[0]][moveInput[1]].getPiece();
-        pieceToMove.move(gameBoard[moveInput[2]][moveInput[3]]);
+    public boolean playMove(int[] moveInput) {
+        Square initialSquare     = gameBoard[moveInput[0]][moveInput[1]];
+        Square destinationSquare = gameBoard[moveInput[2]][moveInput[3]];
+        Piece  pieceToMove       = initialSquare.getPiece();
+        if (pieceToMove != null) {
+            if (pieceToMove.getColor() == Color.WHITE && isWhiteToPlay() || pieceToMove.getColor() == Color.BLACK && !isWhiteToPlay()) {
+                /*boolean moveIsValid = pieceToMove.move(destinationSquare);
+                if (moveIsValid) {*/
+                initialSquare.emptySquare();
+                destinationSquare.setPiece(pieceToMove);
+                return true;
+                //}
+            }
+            return false;
+        }
+        return false;
     }
 }

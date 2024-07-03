@@ -1,7 +1,6 @@
 package net.swanndolia.pieces;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.PieceAction;
 import net.swanndolia.utils.Color;
@@ -19,8 +18,14 @@ public class Knight extends Piece implements PieceAction {
     }
 
     @Override
-    public void move(Square square) {
+    public boolean move(Square square) {
 
+        return false;
+    }
+
+    @Override
+    public boolean moveIsValid(Square square) {
+        return true;
     }
 
     @Override

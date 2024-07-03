@@ -17,6 +17,10 @@ public class Square {
     int horizontalCoordinates;
     int verticalCoordinates;
 
+    public void emptySquare(){
+        this.piece = null;
+    }
+
     @Override
     public String toString() {
         final String ANSI_BLACK            = "\u001B[30m";

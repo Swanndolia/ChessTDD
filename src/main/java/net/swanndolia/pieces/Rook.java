@@ -18,8 +18,14 @@ public class Rook extends Piece implements PieceAction {
     }
 
     @Override
-    public void move(Square square) {
+    public boolean move(Square square) {
 
+        return false;
+    }
+
+    @Override
+    public boolean moveIsValid(Square square) {
+        return true;
     }
 
     @Override

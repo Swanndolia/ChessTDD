@@ -7,39 +7,23 @@ public class Main {
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.initChessboard();
         while (true) {
-            String userInput;
-            if (chessBoard.isWhiteToPlay()) {
-                IHM.sendMessageToUser("White to play; Write a move or type 'exit' to quit.");
-                chessBoard.setWhitePiecesTopside(false);
-                System.out.println(chessBoard);
-                userInput = IHM.askUserInput();
-                if (userInput.contains("exit")) {
-                    return;
-                }
-                int[] moveInput = IHM.parseUserInput(userInput);
-                if (moveInput != null) {
-                    chessBoard.playMove(moveInput);
-                    chessBoard.setWhiteToPlay(false);
+            IHM.sendMessageToUser("Write a move or type 'exit' to quit.");
+            System.out.println(chessBoard);
+            String userInput = IHM.askUserInput();
+            if (userInput.contains("exit")) {
+                return;
+            }
+            int[] moveInput = IHM.parseUserInput(userInput);
+            if (moveInput != null) {
+                if (chessBoard.playMove(moveInput)) {
+                    chessBoard.setWhiteToPlay(!chessBoard.isWhiteToPlay());
+                    chessBoard.setWhitePiecesTopside(!chessBoard.isWhitePiecesTopside());
                 } else {
-                    IHM.sendMessageToUser("Invalid Input");
+                    IHM.sendMessageToUser("Invalid Move");
                 }
             } else {
-                IHM.sendMessageToUser("Black to play; Write a move or type 'exit' to quit.");
-                chessBoard.setWhitePiecesTopside(true);
-                System.out.println(chessBoard);
-                userInput = IHM.askUserInput();
-                if (userInput.contains("exit")) {
-                    return;
-                }
-                int[] moveInput = IHM.parseUserInput(userInput);
-                if (moveInput != null) {
-                    chessBoard.playMove(moveInput);
-                    chessBoard.setWhiteToPlay(true);
-                } else {
-                    IHM.sendMessageToUser("Invalid Input");
-                }
+                IHM.sendMessageToUser("Invalid Input");
             }
-
         }
     }
 }
