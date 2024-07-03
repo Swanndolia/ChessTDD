@@ -1,22 +1,24 @@
 package net.swanndolia.pieces;
 
 import lombok.*;
+import net.swanndolia.gameboard.Square;
+import net.swanndolia.moves.PieceAction;
 import net.swanndolia.utils.Color;
 
 @Data
-public class Bishop extends Piece implements AllowedMove{
-    public Bishop(Color color){
+public class Bishop extends Piece implements PieceAction {
+    public Bishop(Color color, Square square){
         this.color = color;
         this.shortName = "B";
 
     }
     @Override
-    public void capture() {
+    public void capture(Square square) {
 
     }
 
     @Override
-    public void move() {
+    public void move(Square square) {
 
     }
 

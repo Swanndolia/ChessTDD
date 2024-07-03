@@ -2,22 +2,24 @@ package net.swanndolia.pieces;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import net.swanndolia.gameboard.Square;
+import net.swanndolia.moves.PieceAction;
 import net.swanndolia.utils.Color;
 
 @Data
-public class Knight extends Piece implements AllowedMove{
-    public Knight (Color color){
+public class Knight extends Piece implements PieceAction {
+    public Knight (Color color, Square square){
         this.color = color;
         this.shortName = "N";
 
     }
     @Override
-    public void capture() {
+    public void capture(Square square) {
 
     }
 
     @Override
-    public void move() {
+    public void move(Square square) {
 
     }
 

@@ -14,14 +14,17 @@ import java.util.Random;
 public class ChessBoardTest {
     ChessBoard chessBoard = new ChessBoard();
 
-    @RepeatedTest(10)
+    @RepeatedTest(50)
     public void gameboardShouldAlternateBlackAndWhiteCells() {
         chessBoard.initChessboard();
         Square square = chessBoard.getGameBoard()[new Random().nextInt(chessBoard.getGameBoardSize() - 1)][new Random().nextInt(
                 chessBoard.getGameBoardSize() - 1)];
-        if(square.getHorizontalCoordinates() % 2 == 0  && square.getVerticalCoordinates() % 2 == 0){
+        if(square.getHorizontalCoordinates() % 2 == 0  && square.getVerticalCoordinates() % 2 == 0 ){
             assertThat(square.getColor().equals(Color.WHITE));
-        } else{
+        } else if(square.getHorizontalCoordinates() % 2 != 0  && square.getVerticalCoordinates() % 2 != 0 ){
+            assertThat(square.getColor().equals(Color.WHITE));
+        }
+        else {
             assertThat(square.getColor().equals(Color.BLACK));
         }
     }
