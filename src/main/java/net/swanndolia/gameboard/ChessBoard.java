@@ -1,7 +1,6 @@
 package net.swanndolia.gameboard;
 
 import lombok.Data;
-import net.swanndolia.IHM;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
 
@@ -60,6 +59,7 @@ public class ChessBoard {
                 if (moveIsValid) {
                     initialSquare.emptySquare();
                     destinationSquare.setPiece(pieceToMove);
+                    pieceToMove.setSquare(destinationSquare);
                     return true;
                 }
             }

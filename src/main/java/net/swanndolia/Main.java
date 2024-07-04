@@ -17,8 +17,6 @@ public class Main {
             if (moveInput != null) {
                 if (chessBoard.playMove(moveInput)) {
                     chessBoard.setWhiteToPlay(!chessBoard.isWhiteToPlay());
-                } else {
-                    IHM.sendMessageToUser("Invalid Move");
                 }
             } else {
                 IHM.sendMessageToUser("Invalid Input");

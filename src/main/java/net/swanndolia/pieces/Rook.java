@@ -26,18 +26,13 @@ public class Rook extends Piece implements PieceAction {
     }
 
     @Override
-    public void capture(Square square) {
-
+    public boolean capture(Square square) {
+        return true;
     }
 
     @Override
     public boolean move(Square square) {
-        if (moveIsValid(square)) {
-            this.square.setHorizontalCoordinates(square.getHorizontalCoordinates());
-            this.square.setHorizontalCoordinates(square.getHorizontalCoordinates());
-            return true;
-        }
-        return false;
+        return moveIsValid(square);
     }
 
     @Override
