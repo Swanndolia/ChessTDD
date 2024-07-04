@@ -25,13 +25,12 @@ public class Pawn extends Piece implements PieceAction {
 
     @Override
     public boolean capture(Square square) {
-        this.asMoved = true;
-        return true;
+        return super.capture(square);
     }
 
     @Override
     public boolean move(Square square) {
-        if (moveIsValid(square)) {
+        if (super.move(square)) {
             this.asMoved = true;
             return true;
         }

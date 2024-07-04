@@ -24,12 +24,15 @@ public class Knight extends Piece implements PieceAction {
 
     @Override
     public boolean capture(Square square) {
-        return true;
+        return super.capture(square);
     }
 
     @Override
     public boolean move(Square square) {
-        return moveIsValid(square);
+        if (super.move(square)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

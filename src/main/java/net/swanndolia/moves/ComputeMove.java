@@ -84,7 +84,6 @@ public class ComputeMove {
             this.moveDirection = MoveDirection.INVALID;
         }
         IHM.sendMessageToUser(this.moveDirection.name());
-
         return this.moveDirection;
     }
 

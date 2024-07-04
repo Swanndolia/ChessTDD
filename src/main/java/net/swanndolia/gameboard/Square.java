@@ -15,7 +15,7 @@ import static net.swanndolia.utils.ConsoleSpacing.EMPTY_CELL_SPACING;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Square {
-    ChessBoard gameboard;
+    public ChessBoard gameboard;
     Color color;
     Piece piece;
     int horizontalCoordinates;

@@ -3,13 +3,19 @@ package net.swanndolia.gameboard;
 import lombok.Data;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
+import net.swanndolia.utils.ColorList;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static net.swanndolia.utils.ConsoleSpacing.*;
+import static net.swanndolia.utils.ConsoleSpacing.HORIZONTAL_INDEX_SPACING;
+import static net.swanndolia.utils.ConsoleSpacing.STARTING_INDEX_SPACING;
 
 @Data
 public class ChessBoard {
+    public List<Piece> capturedWhitePieces = new ArrayList<Piece>();
+    public List<Piece> capturedBlackPieces = new ArrayList<Piece>();
     int gameBoardSize = 8;
     Square[][] gameBoard = new Square[gameBoardSize][gameBoardSize];
     boolean whiteToPlay = true;
@@ -68,7 +74,7 @@ public class ChessBoard {
         return false;
     }
 
-    public Square getSquare(int verticalCoordinate, int horizontalCoordinate){
+    public Square getSquare(int verticalCoordinate, int horizontalCoordinate) {
         return this.gameBoard[verticalCoordinate][horizontalCoordinate];
     }
 
@@ -94,6 +100,18 @@ public class ChessBoard {
                 gameboard = gameboard.concat("\n");
             }
             gameboard = gameboard.concat(horizontalNotation.reverse().toString().replaceAll(",", HORIZONTAL_INDEX_SPACING));
+        }
+        if (!this.capturedWhitePieces.isEmpty()) {
+            gameboard = gameboard.concat("\n");
+            for (Piece piece : this.capturedWhitePieces) {
+                gameboard = gameboard.concat(ColorList.WHITE_TEXT_HIGH + piece.getHighContrastColoredIcon() + ColorList.RESET);
+            }
+        }
+        if (!this.capturedBlackPieces.isEmpty()) {
+            gameboard = gameboard.concat("\n");
+            for (Piece piece : this.capturedBlackPieces) {
+                gameboard = gameboard.concat(ColorList.BLACK_TEXT + piece.getHighContrastColoredIcon() + ColorList.RESET);
+            }
         }
         return gameboard;
     }

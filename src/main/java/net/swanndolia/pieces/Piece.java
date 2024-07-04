@@ -34,10 +34,25 @@ public abstract class Piece implements PieceAction {
 
     public String getColoredIcon(String backgroundColor) {
         if (this.color == Color.BLACK) {
-            return BLACK_TEXT + backgroundColor + this.icon;
+            return BLACK_TEXT_HIGH + backgroundColor + this.icon;
         } else {
-            return WHITE_TEXT + backgroundColor + this.icon;
+            return WHITE_TEXT_HIGH + backgroundColor + this.icon;
         }
+    }
+
+    @Override
+    public boolean capture(Square square) {
+        if(this.color == Color.WHITE) {
+            square.getPiece().getSquare().getGameboard().getCapturedBlackPieces().add(square.getPiece());
+        }else{
+            square.getPiece().getSquare().getGameboard().getCapturedWhitePieces().add(square.getPiece());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean move(Square square){
+        return moveIsValid(square);
     }
 
     public boolean moveIsValid(Square square) {
@@ -56,4 +71,13 @@ public abstract class Piece implements PieceAction {
         IHM.sendMessageToUser("A " + this.fullName + " can only move: " + this.allowedMoveDirection + " not " + moveDirection);
         return false;
     }
+
+    public String getHighContrastColoredIcon() {
+        if (this.color == Color.BLACK) {
+            return BLACK_TEXT + WHITE_BACK_HIGH + this.icon;
+        } else {
+            return WHITE_TEXT_HIGH + BLACK_BACK + this.icon;
+        }
+    }
+
 }
