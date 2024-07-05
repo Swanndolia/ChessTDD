@@ -16,6 +16,8 @@ import static net.swanndolia.utils.ConsoleSpacing.STARTING_INDEX_SPACING;
 public class ChessBoard {
     public List<Piece> capturedWhitePieces = new ArrayList<Piece>();
     public List<Piece> capturedBlackPieces = new ArrayList<Piece>();
+    public List<Piece> whitePieces = new ArrayList<Piece>();
+    public List<Piece> blackPieces = new ArrayList<Piece>();
     int gameBoardSize = 8;
     Square[][] gameBoard = new Square[gameBoardSize][gameBoardSize];
     boolean whiteToPlay = true;
@@ -40,19 +42,32 @@ public class ChessBoard {
     }
 
     private void addPieces(Square currentSquare, Color color) {
+        Piece piece = null;
         switch (currentSquare.horizontalCoordinates) {
-            case 0, 7 -> currentSquare.setPiece(new Rook(color, currentSquare));
-            case 1, 6 -> currentSquare.setPiece(new Knight(color, currentSquare));
-            case 2, 5 -> currentSquare.setPiece(new Bishop(color, currentSquare));
-            case 3 -> currentSquare.setPiece(new King(color, currentSquare));
-            case 4 -> currentSquare.setPiece(new Queen(color, currentSquare));
-
+            case 0, 7 -> piece = new Rook(color, currentSquare);
+            case 1, 6 -> piece = new Knight(color, currentSquare);
+            case 2, 5 -> piece = new Bishop(color, currentSquare);
+            case 3 -> piece = new King(color, currentSquare);
+            case 4 -> piece = new Queen(color, currentSquare);
         }
+        switch (color) {
+            case WHITE -> this.whitePieces.add(piece);
+            case BLACK -> this.blackPieces.add(piece);
+        }
+        currentSquare.setPiece(piece);
     }
 
     private void addPawns(Square[] whitePawnsRow, Square[] blackPawnsRow) {
-        Arrays.stream(whitePawnsRow).forEach(square -> square.setPiece(new Pawn(Color.WHITE, square)));
-        Arrays.stream(blackPawnsRow).forEach(square -> square.setPiece(new Pawn(Color.BLACK, square)));
+        Arrays.stream(whitePawnsRow).forEach(square -> {
+            Pawn pawn = new Pawn(Color.WHITE, square);
+            square.setPiece(pawn);
+            whitePieces.add(pawn);
+        });
+        Arrays.stream(blackPawnsRow).forEach(square -> {
+            Pawn pawn = new Pawn(Color.BLACK, square);
+            square.setPiece(pawn);
+            blackPieces.add(pawn);
+        });
     }
 
     public boolean playMove(int[] moveInput) {
