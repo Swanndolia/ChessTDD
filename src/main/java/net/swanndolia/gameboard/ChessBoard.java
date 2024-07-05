@@ -1,6 +1,7 @@
 package net.swanndolia.gameboard;
 
 import lombok.Data;
+import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
 import net.swanndolia.utils.ColorList;
@@ -129,5 +130,27 @@ public class ChessBoard {
             }
         }
         return gameboard;
+    }
+
+    public Square getNextSquare(Square square, MoveDirection moveDirection, Color color) {
+        int horizontal = 1;
+        int vertical   = 1;
+        if (color == Color.WHITE) {
+            horizontal = -horizontal;
+        } else {
+            vertical = -vertical;
+        }
+        switch (moveDirection) {
+            case LEFT -> square = getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() - horizontal);
+            case RIGHT -> square = getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() + horizontal);
+            case DIAGONAL_UP_LEFT -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates() - horizontal);
+            case DIAGONAL_UP_RIGHT -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates() + horizontal);
+            case DIAGONAL_DOWN_LEFT -> square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates() - horizontal);
+            case DIAGONAL_DOWN_RIGHT ->
+                    square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates() + horizontal);
+            case FORWARD -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates());
+            case BACKWARD -> square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates());
+        }
+        return square;
     }
 }
