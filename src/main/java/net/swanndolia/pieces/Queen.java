@@ -1,6 +1,7 @@
 package net.swanndolia.pieces;
 
 import lombok.*;
+import net.swanndolia.IHM;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.moves.PieceAction;
@@ -30,18 +31,14 @@ public class Queen extends Piece implements PieceAction {
     }
 
     @Override
-    public boolean capture(Square square) {
-        return super.capture(square);
+    public void capture(Square square) {
+        super.capture(square);
     }
 
     @Override
     public boolean move(Square square) {
-        if (super.move(square)) {
-            return true;
-        }
-        return false;
+        return super.moveOrCapture(square);
     }
-
     @Override
     public String toString() {
         return super.toString();

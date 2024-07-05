@@ -30,16 +30,13 @@ public class King extends Piece implements PieceAction {
     }
 
     @Override
-    public boolean capture(Square square) {
-        return super.capture(square);
+    public void capture(Square square) {
+        super.capture(square);
     }
 
     @Override
     public boolean move(Square square) {
-        if (super.move(square)) {
-            return true;
-        }
-        return false;
+        return super.moveOrCapture(square);
     }
 
     @Override

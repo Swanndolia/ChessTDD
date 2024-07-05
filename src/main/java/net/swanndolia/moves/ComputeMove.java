@@ -1,5 +1,7 @@
 package net.swanndolia.moves;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.swanndolia.IHM;
 import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
@@ -16,6 +18,9 @@ public class ComputeMove {
     int horizontalMovement;
     int verticalMovement;
     int moveDistance;
+    @Setter
+    @Getter
+    String moveResult;
 
     public ComputeMove(Piece piece, Square square) {
         this.piece = piece;
@@ -83,7 +88,6 @@ public class ComputeMove {
         } else {
             this.moveDirection = MoveDirection.INVALID;
         }
-        IHM.sendMessageToUser(this.moveDirection.name());
         return this.moveDirection;
     }
 
@@ -102,6 +106,7 @@ public class ComputeMove {
                     this.moveDistance = this.piece.getSquare().getHorizontalCoordinates() - this.square.getHorizontalCoordinates();
             case FORWARD, BACKWARD -> this.moveDistance = this.piece.getSquare().getVerticalCoordinates() - this.square.getVerticalCoordinates();
         }
+        this.moveDistance = Math.abs(this.moveDistance);
         return this.moveDistance;
     }
 
@@ -111,12 +116,7 @@ public class ComputeMove {
                 IHM.sendMessageToUser("The destination cell already contain your: " + this.square.getPiece().getFullName());
                 return true;
             } else {
-                if (arePiecesBlockingPath()) {
-                    return true;
-                }
-                this.piece.capture(square);
-                IHM.sendMessageToUser("You captured the enemy: " + this.square.getPiece().getFullName());
-                return false;
+                return arePiecesBlockingPath();
             }
         } else {
             return arePiecesBlockingPath();

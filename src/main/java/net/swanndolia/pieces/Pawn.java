@@ -1,6 +1,7 @@
 package net.swanndolia.pieces;
 
-import lombok.*;
+import lombok.Data;
+import net.swanndolia.IHM;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.moves.PieceAction;
@@ -9,6 +10,7 @@ import net.swanndolia.utils.Color;
 @Data
 public class Pawn extends Piece implements PieceAction {
     boolean asMoved = false;
+
     public Pawn(Color color, Square square) {
         this.color = color;
         this.shortName = "P";
@@ -24,16 +26,38 @@ public class Pawn extends Piece implements PieceAction {
     }
 
     @Override
-    public boolean capture(Square square) {
-        return super.capture(square);
+    public void capture(Square square) {
+        super.capture(square);
     }
 
     @Override
     public boolean move(Square square) {
         if (super.move(square)) {
-            this.asMoved = true;
-            return true;
+            if (square.getPiece() == null) {
+                this.asMoved = true;
+                return true;
+            }else {
+                IHM.sendMessageToUser("A pawn can't capture FORWARD but only DIAGONAL_UP");
+                return false;
+            }
+        } else if (this.currentMove.getMoveDistance() == 1 && (
+                this.currentMove.getMoveDirection() == MoveDirection.DIAGONAL_UP_RIGHT ||
+                        this.currentMove.getMoveDirection() == MoveDirection.DIAGONAL_UP_LEFT
+        )) {
+            try {
+                if (square.getPiece() != null && square.getPiece().getColor() != this.color) {
+                    capture(square);
+                    this.asMoved = true;
+                    IHM.sendMessageToUser(this.currentMove.getMoveResult());
+                    return true;
+                }
+            } catch (Exception e) {
+                IHM.sendMessageToUser("You can't capture your own " + square.getPiece().getFullName());
+                return false;
+            }
+            IHM.sendMessageToUser("This move is valid only if it's a capture");
         }
+        IHM.sendMessageToUser(this.currentMove.getMoveResult());
         return false;
     }
 

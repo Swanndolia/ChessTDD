@@ -22,6 +22,7 @@ public abstract class Piece implements PieceAction {
     Square square;
     List<MoveDirection> allowedMoveDirection = new ArrayList<MoveDirection>();
     int maximumMoveDistance;
+    ComputeMove currentMove;
 
     public String toString(String backgroundColor) {
         if (this.color == Color.BLACK) {
@@ -41,34 +42,46 @@ public abstract class Piece implements PieceAction {
     }
 
     @Override
-    public boolean capture(Square square) {
-        if(this.color == Color.WHITE) {
+    public void capture(Square square) {
+        if (this.color == Color.WHITE) {
             square.getPiece().getSquare().getGameboard().getCapturedBlackPieces().add(square.getPiece());
-        }else{
+        } else {
             square.getPiece().getSquare().getGameboard().getCapturedWhitePieces().add(square.getPiece());
         }
-        return true;
+        this.currentMove.setMoveResult("You captured the enemy " + square.getPiece().getFullName());
     }
 
     @Override
-    public boolean move(Square square){
+    public boolean move(Square square) {
         return moveIsValid(square);
     }
 
+    public boolean moveOrCapture(Square square) {
+        if (moveIsValid(square)) {
+            if (square.getPiece() != null) {
+                capture(square);
+                IHM.sendMessageToUser(this.getCurrentMove().getMoveResult());
+            }
+            return true;
+        }
+        IHM.sendMessageToUser(this.getCurrentMove().getMoveResult());
+        return false;
+    }
+
     public boolean moveIsValid(Square square) {
-        ComputeMove   computeMove   = new ComputeMove(this, square);
-        MoveDirection moveDirection = computeMove.getMoveDirection();
+        this.currentMove = new ComputeMove(this, square);
+        MoveDirection moveDirection = this.currentMove.getMoveDirection();
 
         if (this.allowedMoveDirection.contains(moveDirection)) {
-            int moveDistance = computeMove.getMoveDistance();
+            int moveDistance = this.currentMove.getMoveDistance();
             if (moveDistance <= this.getMaximumMoveDistance()) {
-                return !computeMove.isMoveBlocked();
+                return !this.currentMove.isMoveBlocked();
             }
-            IHM.sendMessageToUser(
+            this.currentMove.setMoveResult(
                     "Your " + this.fullName + " can only move " + this.getMaximumMoveDistance() + " square " + this.allowedMoveDirection);
             return false;
         }
-        IHM.sendMessageToUser("A " + this.fullName + " can only move: " + this.allowedMoveDirection + " not " + moveDirection);
+        this.currentMove.setMoveResult("A " + this.fullName + " can only move: " + this.allowedMoveDirection + " not " + moveDirection);
         return false;
     }
 
@@ -79,5 +92,4 @@ public abstract class Piece implements PieceAction {
             return WHITE_TEXT_HIGH + BLACK_BACK + this.icon;
         }
     }
-
 }
