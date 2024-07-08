@@ -3,10 +3,14 @@ package chessboard;
 import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
+import net.swanndolia.pieces.Pawn;
+import net.swanndolia.pieces.Piece;
 import net.swanndolia.utils.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -61,5 +65,23 @@ public class SquareIsAttackedTest {
             case BACKWARD -> expectedSquared = chessBoard.getSquare(5, 4);
         }
         assertThat(nextSquare).isEqualTo(expectedSquared);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Color.class)
+    public void givenPlayerColorIWantToKnowIfASquareIsAttacked(Color color) {
+        List<Piece> pieceList;
+        if (color == Color.WHITE) {
+            pieceList = chessBoard.getWhitePieces();
+        }else {
+            pieceList = chessBoard.getBlackPieces();
+        }
+        for (Piece piece : pieceList){
+            if(piece.getClass() == Pawn.class){
+
+            }else{
+
+            }
+        }
     }
 }

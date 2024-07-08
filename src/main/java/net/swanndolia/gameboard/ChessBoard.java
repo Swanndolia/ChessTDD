@@ -1,6 +1,7 @@
 package net.swanndolia.gameboard;
 
 import lombok.Data;
+import net.swanndolia.IHM;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.pieces.*;
 import net.swanndolia.utils.Color;
@@ -22,6 +23,8 @@ public class ChessBoard {
     int gameBoardSize = 8;
     Square[][] gameBoard = new Square[gameBoardSize][gameBoardSize];
     boolean whiteToPlay = true;
+    King whiteKing;
+    King blackKing;
 
     public void initChessboard() {
         for (int vertical = 0; vertical < gameBoardSize; vertical++) {
@@ -79,19 +82,79 @@ public class ChessBoard {
             if (pieceToMove.getColor() == Color.WHITE && isWhiteToPlay() || pieceToMove.getColor() == Color.BLACK && !isWhiteToPlay()) {
                 boolean moveIsValid = pieceToMove.move(destinationSquare);
                 if (moveIsValid) {
-                    initialSquare.emptySquare();
-                    destinationSquare.setPiece(pieceToMove);
-                    pieceToMove.setSquare(destinationSquare);
+                    Piece backupDestPiece = destinationSquare.getPiece();
+                    updateCheckedSquaresAfterMove(initialSquare, destinationSquare);
+                                        if (this.whiteToPlay && this.whiteKing.getSquare().getIsAttacked().get(Color.BLACK) ||
+                            !this.whiteToPlay && this.blackKing.getSquare().getIsAttacked().get(Color.WHITE)) {
+                        initialSquare.setPiece(destinationSquare.getPiece());
+                        destinationSquare.setPiece(backupDestPiece);
+                        initialSquare.getPiece().setSquare(initialSquare);
+                        IHM.sendMessageToUser("You can't be in check at the end of your turn");
+                        return false;
+                    } else if (!this.whiteToPlay && this.whiteKing.getSquare().getIsAttacked().get(Color.BLACK)) {
+                        IHM.sendMessageToUser("White king Check !");
+                        return true;
+                    } else if (this.whiteToPlay && this.blackKing.getSquare().getIsAttacked().get(Color.WHITE)) {
+                        IHM.sendMessageToUser("Black king Check !");
+                        return true;
+                    }
                     return true;
                 }
+                return false;
             }
-            return false;
         }
         return false;
     }
 
+    private void updateCheckedSquaresAfterMove(Square initialSquare, Square destinationSquare) {
+        destinationSquare.setPiece(initialSquare.getPiece());
+        initialSquare.emptySquare();
+        destinationSquare.getPiece().setSquare(destinationSquare);
+        for (Square[] squareRow : gameBoard) {
+            for (Square square : squareRow) {
+                for (Color color : Color.values()) {
+                    square.setIsAttacked(color, false);
+                }
+            }
+        }
+        for (Piece piece : this.whitePieces) {
+            if (piece.getClass() == King.class) {
+                this.whiteKing = (King) piece;
+            }
+            piece.checkAttackedSquares();
+        }
+        for (Piece piece : this.blackPieces) {
+            if (piece.getClass() == King.class) {
+                this.blackKing = (King) piece;
+            }
+            piece.checkAttackedSquares();
+        }
+    }
+
     public Square getSquare(int verticalCoordinate, int horizontalCoordinate) {
         return this.gameBoard[verticalCoordinate][horizontalCoordinate];
+    }
+
+    public Square getNextSquare(Square square, MoveDirection moveDirection, Color color) {
+        int horizontal = 1;
+        int vertical   = 1;
+        if (color == Color.WHITE) {
+            horizontal = -horizontal;
+        } else {
+            vertical = -vertical;
+        }
+        switch (moveDirection) {
+            case LEFT -> square = getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() - horizontal);
+            case RIGHT -> square = getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() + horizontal);
+            case DIAGONAL_UP_LEFT -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates() - horizontal);
+            case DIAGONAL_UP_RIGHT -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates() + horizontal);
+            case DIAGONAL_DOWN_LEFT -> square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates() - horizontal);
+            case DIAGONAL_DOWN_RIGHT ->
+                    square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates() + horizontal);
+            case FORWARD -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates());
+            case BACKWARD -> square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates());
+        }
+        return square;
     }
 
     @Override
@@ -130,27 +193,5 @@ public class ChessBoard {
             }
         }
         return gameboard;
-    }
-
-    public Square getNextSquare(Square square, MoveDirection moveDirection, Color color) {
-        int horizontal = 1;
-        int vertical   = 1;
-        if (color == Color.WHITE) {
-            horizontal = -horizontal;
-        } else {
-            vertical = -vertical;
-        }
-        switch (moveDirection) {
-            case LEFT -> square = getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() - horizontal);
-            case RIGHT -> square = getSquare(square.getVerticalCoordinates(), square.getHorizontalCoordinates() + horizontal);
-            case DIAGONAL_UP_LEFT -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates() - horizontal);
-            case DIAGONAL_UP_RIGHT -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates() + horizontal);
-            case DIAGONAL_DOWN_LEFT -> square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates() - horizontal);
-            case DIAGONAL_DOWN_RIGHT ->
-                    square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates() + horizontal);
-            case FORWARD -> square = getSquare(square.getVerticalCoordinates() + vertical, square.getHorizontalCoordinates());
-            case BACKWARD -> square = getSquare(square.getVerticalCoordinates() - vertical, square.getHorizontalCoordinates());
-        }
-        return square;
     }
 }

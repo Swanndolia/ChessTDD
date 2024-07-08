@@ -2,6 +2,7 @@ package net.swanndolia.pieces;
 
 import lombok.Data;
 import net.swanndolia.IHM;
+import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.moves.PieceAction;
@@ -36,7 +37,7 @@ public class Pawn extends Piece implements PieceAction {
             if (square.getPiece() == null) {
                 this.asMoved = true;
                 return true;
-            }else {
+            } else {
                 IHM.sendMessageToUser("A pawn can't capture FORWARD but only DIAGONAL_UP");
                 return false;
             }
@@ -59,6 +60,27 @@ public class Pawn extends Piece implements PieceAction {
         }
         IHM.sendMessageToUser(this.currentMove.getMoveResult());
         return false;
+    }
+
+    @Override
+    public void checkAttackedSquares() {
+        ChessBoard chessBoard = this.getSquare().getGameboard();
+        try {
+            Square nextSquareUpRight = chessBoard.getNextSquare(this.square, MoveDirection.DIAGONAL_UP_RIGHT, this.color);
+            if (nextSquareUpRight.getPiece() == null || nextSquareUpRight.getPiece().getColor() != this.color) {
+                nextSquareUpRight.setIsAttacked(this.color, true);
+            }
+        } catch (Exception e) {
+            //IHM.sendMessageToUser(e.getMessage()); //(out of bonds)
+        }
+        try {
+            Square nextSquareUpLeft = chessBoard.getNextSquare(this.square, MoveDirection.DIAGONAL_UP_LEFT, this.color);
+            if (nextSquareUpLeft.getPiece() == null || nextSquareUpLeft.getPiece().getColor() != this.color) {
+                nextSquareUpLeft.setIsAttacked(this.color, true);
+            }
+        } catch (Exception e) {
+            //IHM.sendMessageToUser(e.getMessage()); //(out of bonds)
+        }
     }
 
     @Override

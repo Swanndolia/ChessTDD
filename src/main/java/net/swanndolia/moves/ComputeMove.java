@@ -122,102 +122,17 @@ public class ComputeMove {
             return arePiecesBlockingPath();
         }
     }
-
     private boolean arePiecesBlockingPath() {
         ChessBoard chessBoard = this.piece.getSquare().getGameboard();
+        Square square = this.piece.getSquare();
         for (int i = 1; i < this.moveDistance; i++) {
-            int vertical   = getBoardRelativeVertical(i);
-            int horizontal = getBoardRelativeHorizontal(i);
-            switch (this.moveDirection) {
-                case LEFT -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates(),
-                                             this.piece.getSquare().getHorizontalCoordinates() - horizontal
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case RIGHT -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates(),
-                                             this.piece.getSquare().getHorizontalCoordinates() + horizontal
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case DIAGONAL_UP_LEFT -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() + vertical,
-                                             this.piece.getSquare().getHorizontalCoordinates() - horizontal
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case DIAGONAL_UP_RIGHT -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() + vertical,
-                                             this.piece.getSquare().getHorizontalCoordinates() + horizontal
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case DIAGONAL_DOWN_LEFT -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() - vertical,
-                                             this.piece.getSquare().getHorizontalCoordinates() - horizontal
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case DIAGONAL_DOWN_RIGHT -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() - vertical,
-                                             this.piece.getSquare().getHorizontalCoordinates() + horizontal
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case FORWARD -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() + vertical,
-                                             this.piece.getSquare().getHorizontalCoordinates()
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case BACKWARD -> {
-                    if (chessBoard.getSquare(this.piece.getSquare().getVerticalCoordinates() - vertical,
-                                             this.piece.getSquare().getHorizontalCoordinates()
-                    ).getPiece() != null) {
-                        return true;
-                    }
-                }
-                case KNIGHT -> {
-                    return false;
-                }
-                case INVALID -> {
-                    return true;
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + this.moveDirection);
+            IHM.sendMessageToUser(this.moveDirection + " " + this.piece.getColor());
+            square = chessBoard.getNextSquare(square, this.moveDirection, this.piece.getColor());
+            if (square.getPiece() != null) {
+                this.setMoveResult("this piece is blocked by " + square.getPiece().getFullName());
+                return true;
             }
         }
         return false;
-    }
-
-    private int getBoardRelativeHorizontal(int i) {
-        int horizontal = i;
-        if (this.piece.getColor() == Color.WHITE && (
-                this.moveDirection == MoveDirection.LEFT || this.moveDirection == MoveDirection.RIGHT ||
-                        this.moveDirection == MoveDirection.DIAGONAL_UP_RIGHT || this.moveDirection == MoveDirection.DIAGONAL_DOWN_RIGHT ||
-                        this.moveDirection == MoveDirection.DIAGONAL_UP_LEFT || this.moveDirection == MoveDirection.DIAGONAL_DOWN_LEFT
-        )) {
-            horizontal = -horizontal;
-        }
-        return horizontal;
-    }
-
-    private int getBoardRelativeVertical(int i) {
-        int vertical = i;
-        if (this.piece.getColor() == Color.BLACK && (
-                (this.moveDirection == MoveDirection.FORWARD) || (this.moveDirection == MoveDirection.BACKWARD) ||
-                        this.moveDirection == MoveDirection.DIAGONAL_UP_RIGHT || this.moveDirection == MoveDirection.DIAGONAL_DOWN_RIGHT ||
-                        this.moveDirection == MoveDirection.DIAGONAL_UP_LEFT || this.moveDirection == MoveDirection.DIAGONAL_DOWN_LEFT
-        )) {
-            vertical = -vertical;
-        }
-        return vertical;
     }
 }

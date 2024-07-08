@@ -1,6 +1,7 @@
 package net.swanndolia;
 
 import net.swanndolia.gameboard.ChessBoard;
+import net.swanndolia.pieces.Piece;
 
 public class Main {
     public static void main(String[] args) {

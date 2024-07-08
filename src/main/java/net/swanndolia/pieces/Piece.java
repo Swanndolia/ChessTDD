@@ -2,6 +2,7 @@ package net.swanndolia.pieces;
 
 import lombok.Data;
 import net.swanndolia.IHM;
+import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.ComputeMove;
 import net.swanndolia.moves.MoveDirection;
@@ -90,6 +91,28 @@ public abstract class Piece implements PieceAction {
             return BLACK_TEXT + WHITE_BACK_HIGH + this.icon;
         } else {
             return WHITE_TEXT_HIGH + BLACK_BACK + this.icon;
+        }
+    }
+
+    public void checkAttackedSquares() {
+        ChessBoard chessBoard = this.getSquare().getGameboard();
+        for (MoveDirection moveDirection : this.allowedMoveDirection) {
+            Square nextSquare = this.getSquare();
+            while (nextSquare != null) {
+                try {
+                    nextSquare = chessBoard.getNextSquare(nextSquare, moveDirection, this.color);
+                }catch (Exception e){
+                    break;
+                }
+                if (nextSquare.getPiece() == null) {
+                    nextSquare.setIsAttacked(this.color, true);
+                } else if (nextSquare.getPiece().getColor() != this.color) {
+                    nextSquare.setIsAttacked(this.color, true);
+                    break;
+                } else {
+                    break;
+                }
+            }
         }
     }
 }

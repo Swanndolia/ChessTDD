@@ -4,8 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.swanndolia.IHM;
 import net.swanndolia.pieces.Piece;
 import net.swanndolia.utils.Color;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.swanndolia.utils.ColorList.*;
 import static net.swanndolia.utils.ConsoleSpacing.EMPTY_CELL_SPACING;
@@ -20,6 +24,7 @@ public class Square {
     Piece piece;
     int horizontalCoordinates;
     int verticalCoordinates;
+    public Map<Color, Boolean> isAttacked = new HashMap<Color, Boolean>();
 
     public void emptySquare() {
         this.piece = null;
@@ -38,5 +43,14 @@ public class Square {
             }
             return WHITE_BACK + EMPTY_CELL_SPACING + RESET;
         }
+    }
+
+    public void setIsAttacked(Color color, boolean isAttacked) {
+        if(this.isAttacked == null){
+            this.isAttacked = new HashMap<>();
+            this.isAttacked.put(Color.WHITE, false);
+            this.isAttacked.put(Color.BLACK, false);
+        }
+        this.isAttacked.put(color, isAttacked);
     }
 }
