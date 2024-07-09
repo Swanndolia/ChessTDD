@@ -74,7 +74,6 @@ public abstract class Piece implements PieceAction {
     public boolean moveIsValid(Square square) {
         this.currentMove = new ComputeMove(this, square);
         MoveDirection moveDirection = this.currentMove.getMoveDirection();
-
         if (this.allowedMoveDirection.contains(moveDirection)) {
             int moveDistance = this.currentMove.getMoveDistance();
             if (moveDistance <= this.getMaximumMoveDistance()) {
@@ -97,23 +96,24 @@ public abstract class Piece implements PieceAction {
     }
 
     public void checkAttackedSquares() {
+        this.allowedSquares.clear();
         ChessBoard chessBoard = this.getSquare().getGameboard();
         for (MoveDirection moveDirection : this.allowedMoveDirection) {
             Square nextSquare = this.getSquare();
             while (nextSquare != null) {
                 try {
                     nextSquare = chessBoard.getNextSquare(nextSquare, moveDirection, this.color);
-                }catch (Exception e){
-                    break;
-                }
-                if (nextSquare.getPiece() == null) {
-                    nextSquare.setIsAttacked(this.color, true);
-                    this.allowedSquares.add(nextSquare);
-                } else if (nextSquare.getPiece().getColor() != this.color) {
-                    nextSquare.setIsAttacked(this.color, true);
-                    this.allowedSquares.add(nextSquare);
-                    break;
-                } else {
+                    if (nextSquare.getPiece() == null) {
+                        nextSquare.setIsAttacked(this.color, true);
+                        this.allowedSquares.add(nextSquare);
+                    } else if (nextSquare.getPiece().getColor() != this.color) {
+                        nextSquare.setIsAttacked(this.color, true);
+                        this.allowedSquares.add(nextSquare);
+                        break;
+                    } else {
+                        break;
+                    }
+                } catch (Exception e) {
                     break;
                 }
             }

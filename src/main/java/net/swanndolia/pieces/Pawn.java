@@ -64,12 +64,15 @@ public class Pawn extends Piece implements PieceAction {
 
     @Override
     public void checkAttackedSquares() {
+        this.allowedSquares.clear();
         ChessBoard chessBoard = this.getSquare().getGameboard();
         try {
             Square nextSquareUpRight = chessBoard.getNextSquare(this.square, MoveDirection.DIAGONAL_UP_RIGHT, this.color);
             if (nextSquareUpRight.getPiece() == null || nextSquareUpRight.getPiece().getColor() != this.color) {
                 nextSquareUpRight.setIsAttacked(this.color, true);
-                this.allowedSquares.add(nextSquareUpRight);
+                if (nextSquareUpRight.getPiece() != null) {
+                    this.allowedSquares.add(nextSquareUpRight);
+                }
             }
         } catch (Exception e) {
             //IHM.sendMessageToUser(e.getMessage()); //(out of bonds)
@@ -77,11 +80,35 @@ public class Pawn extends Piece implements PieceAction {
         try {
             Square nextSquareUpLeft = chessBoard.getNextSquare(this.square, MoveDirection.DIAGONAL_UP_LEFT, this.color);
             if (nextSquareUpLeft.getPiece() == null || nextSquareUpLeft.getPiece().getColor() != this.color) {
-                nextSquareUpLeft.setIsAttacked(this.color, true);
-                this.allowedSquares.add(nextSquareUpLeft);
+                if (nextSquareUpLeft.getPiece() != null) {
+                    nextSquareUpLeft.setIsAttacked(this.color, true);
+                    this.allowedSquares.add(nextSquareUpLeft);
+                }
             }
         } catch (Exception e) {
             //IHM.sendMessageToUser(e.getMessage()); //(out of bonds)
+        }
+        addMovementAllowedSquare();
+    }
+
+    private void addMovementAllowedSquare() {
+        Square nextSquare = this.square.getGameboard().getNextSquare(this.square, MoveDirection.FORWARD, this.color);
+        try {
+            if (nextSquare.getPiece() == null) {
+                this.allowedSquares.add(nextSquare);
+                if (!this.asMoved) {
+                    Square nextNextSquare = this.square.getGameboard().getNextSquare(nextSquare, MoveDirection.FORWARD, this.color);
+                    try {
+                        if (nextNextSquare.getPiece() == null) {
+                            this.allowedSquares.add(nextNextSquare);
+                        }
+                    } catch (Exception e) {
+                        //outOfBonds
+                    }
+                }
+            }
+        } catch (Exception e) {
+            //outOfBonds
         }
     }
 

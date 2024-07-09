@@ -1,6 +1,7 @@
 package net.swanndolia.pieces;
 
 import lombok.Data;
+import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.moves.PieceAction;
@@ -39,4 +40,5 @@ public class Rook extends Piece implements PieceAction {
     public String toString() {
         return super.toString();
     }
-}
+
+    }

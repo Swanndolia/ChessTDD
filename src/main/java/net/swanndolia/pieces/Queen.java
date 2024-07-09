@@ -2,6 +2,7 @@ package net.swanndolia.pieces;
 
 import lombok.*;
 import net.swanndolia.IHM;
+import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.moves.PieceAction;

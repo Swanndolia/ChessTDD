@@ -58,15 +58,15 @@ public class Main {
                     } catch (Exception e) {
                         IHM.sendMessageToUser("No available squares");
                     }
+                    try {
                     IHM.sendMessageToUser(String.valueOf(i));
                     IHM.sendMessageToUser(chessBoard.toString());
                     if (chessBoard.playMove(moveInput)) {
                         chessBoard.setWhiteToPlay(!chessBoard.isWhiteToPlay());
                     }
-                    try {
-                        Thread.sleep(12);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+                        IHM.sendMessageToUser("ERROR");
                     }
                 }
             }

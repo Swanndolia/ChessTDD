@@ -1,6 +1,7 @@
 package net.swanndolia.pieces;
 
-import lombok.*;
+import lombok.Data;
+import net.swanndolia.gameboard.ChessBoard;
 import net.swanndolia.gameboard.Square;
 import net.swanndolia.moves.MoveDirection;
 import net.swanndolia.moves.PieceAction;
@@ -42,5 +43,29 @@ public class King extends Piece implements PieceAction {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public void checkAttackedSquares() {
+        this.allowedSquares.clear();
+        ChessBoard chessBoard = this.getSquare().getGameboard();
+        for (MoveDirection moveDirection : this.allowedMoveDirection) {
+            Square nextSquare = this.getSquare();
+            try {
+                nextSquare = chessBoard.getNextSquare(nextSquare, moveDirection, this.color);
+                if (nextSquare.getPiece() == null) {
+                    nextSquare.setIsAttacked(this.color, true);
+                    this.allowedSquares.add(nextSquare);
+                } else if (nextSquare.getPiece().getColor() != this.color) {
+                    nextSquare.setIsAttacked(this.color, true);
+                    this.allowedSquares.add(nextSquare);
+                    break;
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                break;
+            }
+        }
     }
 }

@@ -36,6 +36,7 @@ public class Knight extends Piece implements PieceAction {
 
     @Override
     public void checkAttackedSquares() {
+        this.allowedSquares.clear();
         ChessBoard chessBoard = this.getSquare().getGameboard();
         int        vertical   = this.getSquare().getVerticalCoordinates();
         int        horizontal = this.getSquare().getHorizontalCoordinates();
