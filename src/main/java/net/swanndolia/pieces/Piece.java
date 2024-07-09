@@ -24,11 +24,11 @@ public abstract class Piece implements PieceAction {
     List<MoveDirection> allowedMoveDirection = new ArrayList<MoveDirection>();
     int maximumMoveDistance;
     ComputeMove currentMove;
+    List<Square> allowedSquares = new ArrayList<Square>();
 
     public String toString(String backgroundColor) {
         if (this.color == Color.BLACK) {
             return BLACK_TEXT + backgroundColor + this.shortName;
-
         } else {
             return WHITE_TEXT + backgroundColor + this.shortName;
         }
@@ -46,8 +46,10 @@ public abstract class Piece implements PieceAction {
     public void capture(Square square) {
         if (this.color == Color.WHITE) {
             square.getPiece().getSquare().getGameboard().getCapturedBlackPieces().add(square.getPiece());
+            square.getPiece().getSquare().getGameboard().getBlackPieces().remove(square.getPiece());
         } else {
             square.getPiece().getSquare().getGameboard().getCapturedWhitePieces().add(square.getPiece());
+            square.getPiece().getSquare().getGameboard().getWhitePieces().remove(square.getPiece());
         }
         this.currentMove.setMoveResult("You captured the enemy " + square.getPiece().getFullName());
     }
@@ -106,8 +108,10 @@ public abstract class Piece implements PieceAction {
                 }
                 if (nextSquare.getPiece() == null) {
                     nextSquare.setIsAttacked(this.color, true);
+                    this.allowedSquares.add(nextSquare);
                 } else if (nextSquare.getPiece().getColor() != this.color) {
                     nextSquare.setIsAttacked(this.color, true);
+                    this.allowedSquares.add(nextSquare);
                     break;
                 } else {
                     break;

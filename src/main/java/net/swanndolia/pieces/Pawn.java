@@ -69,6 +69,7 @@ public class Pawn extends Piece implements PieceAction {
             Square nextSquareUpRight = chessBoard.getNextSquare(this.square, MoveDirection.DIAGONAL_UP_RIGHT, this.color);
             if (nextSquareUpRight.getPiece() == null || nextSquareUpRight.getPiece().getColor() != this.color) {
                 nextSquareUpRight.setIsAttacked(this.color, true);
+                this.allowedSquares.add(nextSquareUpRight);
             }
         } catch (Exception e) {
             //IHM.sendMessageToUser(e.getMessage()); //(out of bonds)
@@ -77,6 +78,7 @@ public class Pawn extends Piece implements PieceAction {
             Square nextSquareUpLeft = chessBoard.getNextSquare(this.square, MoveDirection.DIAGONAL_UP_LEFT, this.color);
             if (nextSquareUpLeft.getPiece() == null || nextSquareUpLeft.getPiece().getColor() != this.color) {
                 nextSquareUpLeft.setIsAttacked(this.color, true);
+                this.allowedSquares.add(nextSquareUpLeft);
             }
         } catch (Exception e) {
             //IHM.sendMessageToUser(e.getMessage()); //(out of bonds)

@@ -92,6 +92,7 @@ public class Knight extends Piece implements PieceAction {
     public void verifySquareIsAttacked(Square square) {
         if (square.getPiece() == null || square.getPiece().getColor() != this.color) {
             square.setIsAttacked(this.color, true);
+            this.allowedSquares.add(square);
         }
     }
 

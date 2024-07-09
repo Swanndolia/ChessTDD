@@ -39,6 +39,7 @@ public class ChessBoard {
             }
         }
         addPawns(gameBoard[1], gameBoard[6]);
+        updateAttackedSquares();
     }
 
     private Color handleSquareColor(int vertical, int horizontal) {
@@ -83,19 +84,25 @@ public class ChessBoard {
                 boolean moveIsValid = pieceToMove.move(destinationSquare);
                 if (moveIsValid) {
                     Piece backupDestPiece = destinationSquare.getPiece();
-                    updateCheckedSquaresAfterMove(initialSquare, destinationSquare);
-                                        if (this.whiteToPlay && this.whiteKing.getSquare().getIsAttacked().get(Color.BLACK) ||
+                    destinationSquare.emptySquare();
+                    destinationSquare.setPiece(initialSquare.getPiece());
+                    destinationSquare.getPiece().setSquare(destinationSquare);
+                    initialSquare.emptySquare();
+                    updateAttackedSquares();
+                    if (this.whiteToPlay && this.whiteKing.getSquare().getIsAttacked().get(Color.BLACK) ||
                             !this.whiteToPlay && this.blackKing.getSquare().getIsAttacked().get(Color.WHITE)) {
                         initialSquare.setPiece(destinationSquare.getPiece());
-                        destinationSquare.setPiece(backupDestPiece);
                         initialSquare.getPiece().setSquare(initialSquare);
+                        destinationSquare.setPiece(backupDestPiece);
                         IHM.sendMessageToUser("You can't be in check at the end of your turn");
                         return false;
                     } else if (!this.whiteToPlay && this.whiteKing.getSquare().getIsAttacked().get(Color.BLACK)) {
                         IHM.sendMessageToUser("White king Check !");
+                        verifyCheckMate(Color.WHITE);
                         return true;
                     } else if (this.whiteToPlay && this.blackKing.getSquare().getIsAttacked().get(Color.WHITE)) {
                         IHM.sendMessageToUser("Black king Check !");
+                        verifyCheckMate(Color.BLACK);
                         return true;
                     }
                     return true;
@@ -106,11 +113,8 @@ public class ChessBoard {
         return false;
     }
 
-    private void updateCheckedSquaresAfterMove(Square initialSquare, Square destinationSquare) {
-        destinationSquare.setPiece(initialSquare.getPiece());
-        initialSquare.emptySquare();
-        destinationSquare.getPiece().setSquare(destinationSquare);
-        for (Square[] squareRow : gameBoard) {
+    private void updateAttackedSquares() {
+        for (Square[] squareRow : this.gameBoard) {
             for (Square square : squareRow) {
                 for (Color color : Color.values()) {
                     square.setIsAttacked(color, false);
@@ -129,6 +133,23 @@ public class ChessBoard {
             }
             piece.checkAttackedSquares();
         }
+    }
+
+    private void verifyCheckMate(Color color) {
+        List<Piece> pieceToCheckForCheckmate = color == Color.WHITE ? this.whitePieces : this.blackPieces;
+        /*
+            list<map<Piece, MoveDirection>> checkList
+            check all square not attacked and free around king
+            if (checkList.size() => 2)
+                if no square available checkmate
+            else
+                get piece horizontal and vertical
+                if(attackingPiece == knight )
+                    For each piece except king try{ move() on including checkingPiece}
+                else
+                    For each piece except king try{ move() on each squares between and including checkingPiece}
+               checkmate if not possible
+        */
     }
 
     public Square getSquare(int verticalCoordinate, int horizontalCoordinate) {
